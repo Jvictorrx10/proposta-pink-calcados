@@ -44,12 +44,13 @@
   <script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
-  <p class="demo-bar">Proposta de site — demonstração. Fotos ilustrativas.</p>
+  <p class="demo-bar">Proposta de site — demonstração. Fotos e preços ilustrativos.</p>
+  <p class="promo"><span>Até 70% OFF</span><span>Retire na loja no Água Verde</span><span>Motoboy em Curitiba</span></p>
 
   <header class="nav">
     <a class="wordmark" href="#topo" aria-label="Pink Calçados, início">Pink</a>
     <nav aria-label="Seções">
-      <a href="#modelos">Modelos</a>
+      <a href="#modelos">Vitrine</a>
       <a href="#como-funciona">Como funciona</a>
       <a href="#loja">A loja</a>
     </nav>
@@ -66,7 +67,7 @@
           <h1 id="hero-title" class="reveal">Seu próximo par com até 70% OFF.</h1>
           <p class="lead reveal">A Pink Calçados é um outlet de tênis, sandálias, rasteirinhas e botas no Água Verde, em Curitiba. Escolha os modelos aqui e confirme o número com a loja no WhatsApp.</p>
           <div class="hero-actions reveal">
-            <a class="btn" href="#modelos">Ver os modelos</a>
+            <a class="btn" href="#modelos">Ver a vitrine</a>
             <a class="link" href="#loja">Como chegar na loja</a>
           </div>
         </div>
@@ -79,46 +80,29 @@
       </figure>
     </section>
 
-    <!-- Catálogo: foto quadrada + abas por categoria -->
-    <section class="catalog" id="modelos" aria-labelledby="catalog-title">
-      <h2 id="catalog-title" class="catalog-title reveal">Escolha por categoria</h2>
-      <div class="catalog-photo reveal">
-        <img data-model-photo src="https://images.unsplash.com/photo-1622760806364-5ccac8096b59?w=900&h=900&fit=crop&fm=webp&q=70" width="900" height="900" alt="" loading="lazy">
-        <p class="caption">Imagem ilustrativa</p>
+    <!-- Vitrine: categorias em círculos + grade de produtos, como uma loja virtual -->
+    <section class="shop" id="modelos" aria-labelledby="shop-title">
+      <div class="shop-head">
+        <h2 id="shop-title">Vitrine da semana</h2>
+        <p>Escolha o modelo e o número, coloque na sacola e finalize pelo WhatsApp. <span class="note">Fotos e preços desta demonstração são ilustrativos.</span></p>
       </div>
-      <div class="catalog-body">
-        <div class="tabs reveal" role="tablist" aria-label="Categorias" data-tabs></div>
-        <p class="brands reveal" data-brands></p>
-        <div class="models reveal" data-models aria-label="Modelos da categoria"></div>
-        <div class="model-info" aria-live="polite">
-          <h3 data-model-name>Tênis casual bege</h3>
-          <p data-model-text></p>
-          <p class="note">Preço e marca: consulte a equipe.</p>
-        </div>
-        <fieldset class="sizes">
-          <legend>Seu número</legend>
-          <div data-sizes></div>
-        </fieldset>
-        <div class="cells">
-          <button class="cell cell-ink" type="button" data-add>Colocar na sacola</button>
-          <button class="cell cell-soft" type="button" data-ask>Perguntar só este</button>
-        </div>
-        <p class="note">A numeração mostrada é só para escolher: a loja confirma o que tem no estoque.</p>
-      </div>
+      <div class="cats" role="group" aria-label="Filtrar por categoria" data-cats></div>
+      <p class="brands note" data-brands aria-live="polite"></p>
+      <ul class="grid" data-grid></ul>
     </section>
 
     <!-- Como funciona: o pedido impresso como um cupom -->
     <section class="how" id="como-funciona" aria-labelledby="how-title">
       <div class="how-text">
         <h2 id="how-title" class="reveal">Sem perguntar peça por peça</h2>
-        <p class="reveal">Hoje você vê o modelo no Instagram e pergunta número e preço no direct, um por um. Aqui você monta a sacola com até três pares e manda tudo de uma vez.</p>
+        <p class="reveal">Hoje você vê o modelo no Instagram e pergunta número e preço no direct, um por um. Aqui você monta a sacola, vê o total e manda tudo de uma vez.</p>
       </div>
       <div class="slip reveal" aria-label="Como funciona o pedido">
         <p class="slip-title"><span class="script">Pink</span> · seu pedido</p>
         <h3>No site</h3>
         <p class="row"><span>Escolha a categoria e o modelo</span><i></i><b>1 min</b></p>
         <p class="row"><span>Marque o seu número</span><i></i><b>34 a 40</b></p>
-        <p class="row"><span>Junte até 3 pares na sacola</span><i></i><b>1 toque</b></p>
+        <p class="row"><span>Junte os pares na sacola</span><i></i><b>1 toque</b></p>
         <h3>No WhatsApp</h3>
         <p class="row"><span>A mensagem vai com modelos e números</span><i></i><b>pronta</b></p>
         <p class="row"><span>A consultora confirma preço e estoque</span><i></i><b>na conversa</b></p>
@@ -164,7 +148,7 @@
       <div class="footer-menu">
         <p class="wordmark wordmark-lg reveal">Pink</p>
         <nav aria-label="Rodapé" class="footer-links reveal">
-          <a href="#modelos">Modelos</a>
+          <a href="#modelos">Vitrine</a>
           <a href="#como-funciona">Como funciona</a>
           <a href="#loja">A loja</a>
           <a href="https://www.instagram.com/pinkcuritiba/" target="_blank" rel="noopener">Instagram</a>
@@ -176,7 +160,7 @@
 
   <!-- Sacola -->
   <div class="bagbar" data-bagbar hidden>
-    <p><b data-bag-count>0</b> <span data-bag-word>par</span> na sacola</p>
+    <p><b data-bag-count>0</b> <span data-bag-word>par</span> · <b data-bag-total></b></p>
     <button class="btn btn-small" type="button" data-open-bag>Ver sacola</button>
   </div>
 
@@ -188,7 +172,7 @@
         <button class="linkbtn" type="button" data-close-bag>Fechar</button>
       </div>
       <ul class="bag-list" data-bag-list></ul>
-      <p class="bag-empty" data-bag-empty>Sua sacola está vazia. Escolha até três pares no catálogo.</p>
+      <p class="bag-empty" data-bag-empty>Sua sacola está vazia. Escolha os pares na vitrine.</p>
       <label class="field">Seu nome (opcional)
         <input type="text" name="nome" autocomplete="given-name" data-bag-name>
       </label>
@@ -197,7 +181,7 @@
         <label><input type="radio" name="receber" value="entrega por motoboy" checked> Entrega por motoboy</label>
         <label><input type="radio" name="receber" value="retirar ou provar na loja"> Retirar ou provar na loja</label>
       </fieldset>
-      <button class="btn btn-wide" type="button" data-send>Enviar pelo WhatsApp</button>
+      <button class="btn btn-wide" type="button" data-send>Finalizar pelo WhatsApp</button>
       <p class="note" data-send-note>A mensagem é copiada e o WhatsApp da Pink abre. É só colar e enviar: a consultora confirma preço, número e entrega.</p>
     </div>
   </dialog>

@@ -3,16 +3,20 @@
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
   const img = (id, w, h) => `https://images.unsplash.com/photo-${id}?w=${w}&h=${h}&fit=crop&fm=webp&q=70`;
-  const MAX = 3;
+  const brl = v => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  const MAX = 6;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // ---------- Produtos ----------
+  const produtos = D.categorias.flatMap(c => c.modelos.map(m => ({ ...m, cat: c.id, catNome: c.nome })));
+  const byId = id => produtos.find(p => p.id === id);
+
   // ---------- Estado ----------
-  let cat = D.categorias[0];
-  let model = cat.modelos[0];
-  let size = null;
+  let filtro = 'todos';
+  const picked = {}; // número escolhido em cada cartão
   let bag = [];
-  try { bag = JSON.parse(localStorage.getItem('pink-sacola') || '[]').slice(0, MAX); } catch (e) {}
-  const save = () => { try { localStorage.setItem('pink-sacola', JSON.stringify(bag)); } catch (e) {} };
+  try { bag = JSON.parse(localStorage.getItem('pink-sacola') || '[]').filter(i => byId(i.id)).slice(0, MAX); } catch (e) {}
+  const save = () => { try { localStorage.setItem('pink-sacola', JSON.stringify(bag.map(({ id, size }) => ({ id, size })))); } catch (e) {} };
 
   // ---------- Avisos ----------
   const toastEl = $('[data-toast]');
@@ -41,77 +45,77 @@
   }
   const pageUrl = () => location.href.split('#')[0];
 
-  // ---------- Catálogo ----------
-  const tabsEl = $('[data-tabs]');
-  const modelsEl = $('[data-models]');
-  const sizesEl = $('[data-sizes]');
-  const photo = $('[data-model-photo]');
+  // ---------- Vitrine ----------
+  const catsEl = $('[data-cats]');
+  const gridEl = $('[data-grid]');
+  const cats = [{ id: 'todos', nome: 'Todos', foto: '1786396798387-f1eb58ab4d15' },
+    ...D.categorias.map(c => ({ id: c.id, nome: c.nome, foto: c.modelos[0].foto }))];
 
-  tabsEl.innerHTML = D.categorias.map(c =>
-    `<button type="button" role="tab" id="tab-${c.id}" data-cat="${c.id}" aria-selected="false">${c.nome}</button>`).join('');
-  sizesEl.innerHTML = D.numeracao.map(n =>
-    `<button type="button" data-size="${n}" aria-pressed="false" aria-label="Número ${n}">${n}</button>`).join('');
+  catsEl.innerHTML = cats.map(c =>
+    `<button type="button" data-cat="${c.id}" aria-pressed="false">
+      <img src="${img(c.foto, 160, 160)}" width="80" height="80" alt="" loading="lazy"><span>${c.nome}</span></button>`).join('');
 
-  function renderCat() {
-    $$('button', tabsEl).forEach(b => b.setAttribute('aria-selected', String(b.dataset.cat === cat.id)));
-    $('[data-brands]').textContent = `Marcas desta seção na loja: ${cat.marcas}.`;
-    modelsEl.innerHTML = cat.modelos.map(m =>
-      `<button type="button" data-model="${m.id}" aria-pressed="false" aria-label="${m.nome}">
-        <img src="${img(m.foto, 168, 168)}" width="84" height="84" alt="" loading="lazy"></button>`).join('');
-    renderModel();
+  function card(p) {
+    const off = Math.round((1 - p.por / p.de) * 100);
+    const sizes = D.numeracao.map(n => {
+      const out = p.esgotados.includes(n);
+      return `<button type="button" data-size="${n}" aria-pressed="${picked[p.id] === n}" ${out ? 'disabled' : ''}
+        aria-label="Número ${n}${out ? ', esgotado' : ''}">${n}</button>`;
+    }).join('');
+    return `<li class="card" data-id="${p.id}">
+      <div class="card-photo"><img src="${img(p.foto, 600, 750)}" width="600" height="750" alt="${p.nome} (imagem ilustrativa)" loading="lazy"><span class="off">-${off}%</span></div>
+      <p class="card-cat">${p.catNome}</p>
+      <h3>${p.nome}</h3>
+      <p class="price"><s>${brl(p.de)}</s> <b>${brl(p.por)}</b></p>
+      <div class="card-sizes" role="group" aria-label="Número">${sizes}</div>
+      <button class="card-add" type="button" data-add>Adicionar à sacola</button>
+    </li>`;
   }
-  function renderModel() {
-    $$('button', modelsEl).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.model === model.id)));
-    $('[data-model-name]').textContent = model.nome;
-    $('[data-model-text]').textContent = model.texto;
-    const src = img(model.foto, 900, 900);
-    if (photo.getAttribute('src') !== src) {
-      photo.classList.add('is-swapping');
-      setTimeout(() => { photo.src = src; photo.alt = `${model.nome} (imagem ilustrativa)`; }, reduced ? 0 : 200);
-      photo.onload = () => photo.classList.remove('is-swapping');
-    }
-    photo.alt = `${model.nome} (imagem ilustrativa)`;
-  }
-  function renderSizes() {
-    $$('button', sizesEl).forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.size) === size)));
+  const tile = `<li class="tile">
+      <p class="script">Pink</p>
+      <p>Chega novidade toda semana. Veja o que entrou no Instagram.</p>
+      <a href="https://www.instagram.com/pinkcuritiba/" target="_blank" rel="noopener">@pinkcuritiba</a>
+    </li>`;
+
+  function renderShop() {
+    $$('button', catsEl).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.cat === filtro)));
+    const lista = filtro === 'todos' ? produtos : produtos.filter(p => p.cat === filtro);
+    const c = D.categorias.find(x => x.id === filtro);
+    $('[data-brands]').textContent = c ? `Marcas de ${c.nome.toLowerCase()} na loja: ${c.marcas}.` : 'Marcas na loja: Vizzano, Moleca, Beira Rio e Actvitta.';
+    gridEl.innerHTML = lista.map(card).join('') + (filtro === 'todos' ? tile : '');
   }
 
-  tabsEl.addEventListener('click', e => {
+  catsEl.addEventListener('click', e => {
     const b = e.target.closest('[data-cat]'); if (!b) return;
-    cat = D.categorias.find(c => c.id === b.dataset.cat);
-    model = cat.modelos[0];
-    renderCat();
-  });
-  tabsEl.addEventListener('keydown', e => {
-    if (!['ArrowRight', 'ArrowLeft'].includes(e.key)) return;
-    const i = D.categorias.indexOf(cat);
-    const next = D.categorias[(i + (e.key === 'ArrowRight' ? 1 : -1) + D.categorias.length) % D.categorias.length];
-    cat = next; model = cat.modelos[0]; renderCat(); $(`#tab-${cat.id}`).focus();
-  });
-  modelsEl.addEventListener('click', e => {
-    const b = e.target.closest('[data-model]'); if (!b) return;
-    model = cat.modelos.find(m => m.id === b.dataset.model);
-    renderModel();
-  });
-  sizesEl.addEventListener('click', e => {
-    const b = e.target.closest('[data-size]'); if (!b) return;
-    const n = Number(b.dataset.size);
-    size = size === n ? null : n;
-    renderSizes();
+    filtro = b.dataset.cat;
+    renderShop();
   });
 
-  $('[data-add]').addEventListener('click', () => {
-    if (!size) { toast('Escolha o seu número antes.'); sizesEl.querySelector('button').focus(); return; }
-    if (bag.some(i => i.id === model.id && i.size === size)) { toast('Esse par já está na sacola.'); return; }
-    if (bag.length >= MAX) { toast(`A sacola leva até ${MAX} pares. Envie estes e continue depois.`); return; }
-    bag.push({ id: model.id, nome: model.nome, foto: model.foto, size });
+  gridEl.addEventListener('click', e => {
+    const li = e.target.closest('.card'); if (!li) return;
+    const p = byId(li.dataset.id);
+    const s = e.target.closest('[data-size]');
+    if (s) {
+      const n = Number(s.dataset.size);
+      picked[p.id] = picked[p.id] === n ? undefined : n;
+      $$('[data-size]', li).forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.size) === picked[p.id])));
+      li.classList.remove('needs-size');
+      return;
+    }
+    if (!e.target.closest('[data-add]')) return;
+    const size = picked[p.id];
+    if (!size) {
+      li.classList.remove('needs-size'); void li.offsetWidth; li.classList.add('needs-size');
+      toast('Escolha o número antes.');
+      return;
+    }
+    if (bag.some(i => i.id === p.id && i.size === size)) { toast('Esse par já está na sacola.'); return; }
+    if (bag.length >= MAX) { toast(`A sacola leva até ${MAX} pares. Finalize estes e continue depois.`); return; }
+    bag.push({ id: p.id, size });
     save(); renderBag();
-    toast(`${model.nome}, número ${size}, na sacola.`);
+    toast(`${p.nome}, número ${size}, na sacola.`);
   });
-  $('[data-ask]').addEventListener('click', () => {
-    const n = size ? `no número ${size}` : 'no meu número';
-    sendWhatsApp(`Oi, Pink! Vi no site o modelo "${model.nome}" (${cat.nome}). Tem ${n}? Qual o preço?\n${pageUrl()}`);
-  });
+
   $('[data-ask-general]').addEventListener('click', () => {
     sendWhatsApp(`Oi, Pink! Vim pelo site e queria tirar uma dúvida.\n${pageUrl()}`);
   });
@@ -119,23 +123,27 @@
   // ---------- Sacola ----------
   const dlg = $('[data-bag]');
   const bagbar = $('[data-bagbar]');
+  const total = () => bag.reduce((t, i) => t + byId(i.id).por, 0);
   function bagMessage() {
     const nome = $('[data-bag-name]').value.trim();
     const receber = $('input[name="receber"]:checked').value;
-    const linhas = bag.map((i, k) => `${k + 1}. ${i.nome} — número ${i.size}`).join('\n');
-    return `Oi, Pink!${nome ? ` Aqui é ${nome}.` : ''} Montei uma sacola no site:\n${linhas}\n` +
-      `Prefiro ${receber}. Pode me passar preço e disponibilidade?\n${pageUrl()}`;
+    const linhas = bag.map((i, k) => { const p = byId(i.id); return `${k + 1}. ${p.nome} — número ${i.size} — ${brl(p.por)}`; }).join('\n');
+    return `Oi, Pink!${nome ? ` Aqui é ${nome}.` : ''} Montei uma sacola no site:\n${linhas}\nTotal: ${brl(total())}\n` +
+      `Prefiro ${receber}. Pode confirmar se tem esses números?\n${pageUrl()}`;
   }
   function renderBag() {
     $$('[data-bag-count]').forEach(el => { el.textContent = bag.length; });
+    $$('[data-bag-total]').forEach(el => { el.textContent = brl(total()); });
     $('[data-bag-word]').textContent = bag.length === 1 ? 'par' : 'pares';
     bagbar.hidden = bag.length === 0 || dlg.open;
     $('[data-bag-empty]').hidden = bag.length > 0;
     $('[data-send]').disabled = bag.length === 0;
-    $('[data-bag-list]').innerHTML = bag.map((i, k) =>
-      `<li><img src="${img(i.foto, 144, 144)}" width="72" height="72" alt="">
-        <span>${i.nome}<small>Número ${i.size}</small></span>
-        <button class="linkbtn" type="button" data-remove="${k}" aria-label="Tirar ${i.nome} da sacola">Tirar</button></li>`).join('');
+    $('[data-bag-list]').innerHTML = bag.map((i, k) => {
+      const p = byId(i.id);
+      return `<li><img src="${img(p.foto, 144, 144)}" width="72" height="72" alt="">
+        <span>${p.nome}<small>Número ${i.size} · ${brl(p.por)}</small></span>
+        <button class="linkbtn" type="button" data-remove="${k}" aria-label="Tirar ${p.nome} da sacola">Tirar</button></li>`;
+    }).join('') + (bag.length ? `<li class="bag-sum"><span>Total <small>preços ilustrativos</small></span><b>${brl(total())}</b></li>` : '');
   }
   function openBag(e) {
     if (e) e.preventDefault();
@@ -151,7 +159,7 @@
     bag.splice(Number(b.dataset.remove), 1); save(); renderBag();
   });
   $('[data-send]').addEventListener('click', () => { if (bag.length) sendWhatsApp(bagMessage()); });
-  if (D.whatsapp.numero) $('[data-send-note]').textContent = 'O WhatsApp da Pink abre com a sacola escrita. A consultora confirma preço, número e entrega.';
+  if (D.whatsapp.numero) $('[data-send-note]').textContent = 'O WhatsApp da Pink abre com a sacola escrita. A consultora confirma número, pagamento e entrega.';
 
   // ---------- Horário ----------
   $('[data-hours]').innerHTML = D.horario.map(([d, h]) => `<dt>${d}</dt><dd>${h}</dd>`).join('');
@@ -178,13 +186,12 @@
       io.unobserve(en.target);
     });
   }, { rootMargin: '0px 0px -8% 0px' });
-  $$('.reveal').forEach((el, k) => {
+  $$('.reveal').forEach(el => {
     const sib = [...el.parentElement.children].filter(c => c.classList.contains('reveal'));
     el.style.transitionDelay = `${sib.indexOf(el) * 80}ms`;
     if (io) io.observe(el); else el.classList.add('is-in');
   });
 
-  renderCat();
-  renderSizes();
+  renderShop();
   renderBag();
 })();

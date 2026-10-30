@@ -28,24 +28,27 @@ window.PINK = {
   entrega: { texto: 'Motoboy: consulte a área e a taxa', confirmed: false }, // uma avaliação cita entrega por motoboy
   pagamento: { texto: 'Consulte a equipe', confirmed: false },
   numeracao: [34, 35, 36, 37, 38, 39, 40], // apenas visual até a loja confirmar o estoque
+  // ILUSTRATIVO: preços ("de" e "por") e números esgotados são exemplos para mostrar a vitrine.
+  // Troque pelos valores reais da Pink antes de publicar de verdade.
+  precosIlustrativos: true,
   // Categorias e marcas: confirmadas por posts da loja. Os modelos são exemplos ilustrativos.
   categorias: [
     { id: 'tenis', nome: 'Tênis', marcas: 'Moleca, Vizzano e Actvitta', modelos: [
-      { id: 'tenis-casual-bege', nome: 'Tênis casual bege', foto: '1622760806364-5ccac8096b59', texto: 'Casual e leve, para o dia todo, com qualquer roupa.' },
-      { id: 'tenis-rosa', nome: 'Tênis rosa', foto: '1692735332246-3b1576a0a669', texto: 'Cor para alegrar o jeans e o moletom.' },
+      { id: 'tenis-casual-bege', nome: 'Tênis casual bege', foto: '1622760806364-5ccac8096b59', de: 229.9, por: 99.9, esgotados: [34] },
+      { id: 'tenis-rosa', nome: 'Tênis rosa', foto: '1692735332246-3b1576a0a669', de: 199.9, por: 79.9, esgotados: [39, 40] },
     ] },
     { id: 'sandalia', nome: 'Sandálias', marcas: 'Vizzano', modelos: [
-      { id: 'sandalia-nude-laco', nome: 'Sandália nude com laço', foto: '1590099033615-be195f8d575c', texto: 'Salto fino e laço com brilho, para festa e para sair à noite.' },
-      { id: 'sandalia-salto-bloco', nome: 'Sandália salto bloco', foto: '1595970487296-8818e128ac4b', texto: 'Salto bloco, firme para ficar de pé a noite toda.' },
+      { id: 'sandalia-nude-laco', nome: 'Sandália nude com laço', foto: '1590099033615-be195f8d575c', de: 259.9, por: 119.9, esgotados: [35] },
+      { id: 'sandalia-salto-bloco', nome: 'Sandália salto bloco', foto: '1595970487296-8818e128ac4b', de: 189.9, por: 89.9, esgotados: [] },
     ] },
     { id: 'rasteirinha', nome: 'Rasteirinhas', marcas: 'Moleca', modelos: [
-      { id: 'rasteirinha-trancada', nome: 'Rasteirinha trançada', foto: '1618615098938-84fc29796e76', texto: 'Tiras trançadas e solado baixinho, do dia a dia ao fim de semana.' },
-      { id: 'rasteirinha-tiras-largas', nome: 'Rasteirinha de tiras largas', foto: '1605445175147-8d2340ea9065', texto: 'Calça fácil e segura bem o pé.' },
+      { id: 'rasteirinha-trancada', nome: 'Rasteirinha trançada', foto: '1618615098938-84fc29796e76', de: 129.9, por: 49.9, esgotados: [34, 38] },
+      { id: 'rasteirinha-tiras-largas', nome: 'Rasteirinha de tiras largas', foto: '1605445175147-8d2340ea9065', de: 119.9, por: 44.9, esgotados: [] },
     ] },
     { id: 'bota', nome: 'Botas', marcas: 'Beira Rio', modelos: [
-      { id: 'bota-cano-curto-caramelo', nome: 'Bota cano curto caramelo', foto: '1605733160314-4fc7dac4bb16', texto: 'Cano curto e salto baixo, para o frio de Curitiba.' },
-      { id: 'bota-salto-fino-preta', nome: 'Bota salto fino preta', foto: '1602250523342-d2212b96a297', texto: 'Salto fino e bico fino, de calça ou de vestido.' },
-      { id: 'bota-amarrar-off-white', nome: 'Bota de amarrar off-white', foto: '1610398752800-146f269dfcc8', texto: 'Amarração na frente e salto bloco, firme para andar.' },
+      { id: 'bota-cano-curto-caramelo', nome: 'Bota cano curto caramelo', foto: '1605733160314-4fc7dac4bb16', de: 349.9, por: 159.9, esgotados: [40] },
+      { id: 'bota-salto-fino-preta', nome: 'Bota salto fino preta', foto: '1602250523342-d2212b96a297', de: 399.9, por: 179.9, esgotados: [34, 35] },
+      { id: 'bota-amarrar-off-white', nome: 'Bota de amarrar off-white', foto: '1610398752800-146f269dfcc8', de: 379.9, por: 169.9, esgotados: [] },
     ] },
   ],
 };
