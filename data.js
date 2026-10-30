@@ -35,7 +35,7 @@ window.PINK = {
       { id: 'tenis-rosa', nome: 'Tênis rosa', foto: '1692735332246-3b1576a0a669', texto: 'Cor para alegrar o jeans e o moletom.' },
     ] },
     { id: 'sandalia', nome: 'Sandálias', marcas: 'Vizzano', modelos: [
-      { id: 'sandalia-tiras-rosa', nome: 'Sandália de tiras rosa', foto: '1630407332126-70ebb700976b', texto: 'Tiras finas e salto baixo, para o calor e para sair à noite.' },
+      { id: 'sandalia-nude-laco', nome: 'Sandália nude com laço', foto: '1590099033615-be195f8d575c', texto: 'Salto fino e laço com brilho, para festa e para sair à noite.' },
       { id: 'sandalia-salto-bloco', nome: 'Sandália salto bloco', foto: '1595970487296-8818e128ac4b', texto: 'Salto bloco, firme para ficar de pé a noite toda.' },
     ] },
     { id: 'rasteirinha', nome: 'Rasteirinhas', marcas: 'Moleca', modelos: [
