@@ -63,9 +63,9 @@
         aria-label="Número ${n}${out ? ', esgotado' : ''}">${n}</button>`;
     }).join('');
     return `<li class="card" data-id="${p.id}">
-      <div class="card-photo"><img src="${img(p.foto, 600, 750)}" width="600" height="750" alt="${p.nome} (imagem ilustrativa)" loading="lazy"><span class="off">-${off}%</span></div>
+      <a class="card-photo" href="#p-${p.id}" data-open tabindex="-1" aria-hidden="true"><img src="${img(p.foto, 600, 750)}" width="600" height="750" alt="" loading="lazy"><span class="off">-${off}%</span><span class="card-more">Ver detalhes</span></a>
       <p class="card-cat">${p.catNome}</p>
-      <h3>${p.nome}</h3>
+      <h3><a href="#p-${p.id}" data-open>${p.nome}</a></h3>
       <p class="price"><s>${brl(p.de)}</s> <b>${brl(p.por)}</b></p>
       <div class="card-sizes" role="group" aria-label="Número">${sizes}</div>
       <button class="card-add" type="button" data-add>Adicionar à sacola</button>
@@ -94,6 +94,7 @@
   gridEl.addEventListener('click', e => {
     const li = e.target.closest('.card'); if (!li) return;
     const p = byId(li.dataset.id);
+    if (e.target.closest('[data-open]')) { e.preventDefault(); openPdp(p, true); return; }
     const s = e.target.closest('[data-size]');
     if (s) {
       const n = Number(s.dataset.size);
@@ -109,11 +110,95 @@
       toast('Escolha o número antes.');
       return;
     }
-    if (bag.some(i => i.id === p.id && i.size === size)) { toast('Esse par já está na sacola.'); return; }
-    if (bag.length >= MAX) { toast(`A sacola leva até ${MAX} pares. Finalize estes e continue depois.`); return; }
+    addToBag(p, size);
+  });
+
+  function addToBag(p, size) {
+    if (bag.some(i => i.id === p.id && i.size === size)) { toast('Esse par já está na sacola.'); return false; }
+    if (bag.length >= MAX) { toast(`A sacola leva até ${MAX} pares. Finalize estes e continue depois.`); return false; }
     bag.push({ id: p.id, size });
     save(); renderBag();
+    bagbar.classList.remove('bump'); void bagbar.offsetWidth; bagbar.classList.add('bump');
     toast(`${p.nome}, número ${size}, na sacola.`);
+    return true;
+  }
+
+  // ---------- Ficha do produto ----------
+  const pdp = $('[data-pdp]');
+  let atual = null;
+  function syncSizes(p) {
+    $$('[data-size]', gridEl.querySelector(`[data-id="${p.id}"]`) || document.createElement('div'))
+      .forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.size) === picked[p.id])));
+  }
+  function renderPdp(p) {
+    atual = p;
+    const off = Math.round((1 - p.por / p.de) * 100);
+    const c = D.categorias.find(x => x.id === p.cat);
+    const im = $('[data-pdp-img]');
+    im.src = img(p.foto, 900, 1125); im.alt = `${p.nome} (imagem ilustrativa)`;
+    $('[data-pdp-off]').textContent = `-${off}%`;
+    $('[data-pdp-cat]').textContent = p.catNome;
+    $('[data-pdp-name]').textContent = p.nome;
+    $('[data-pdp-de]').textContent = brl(p.de);
+    $('[data-pdp-por]').textContent = brl(p.por);
+    $('[data-pdp-save]').textContent = `Você economiza ${brl(p.de - p.por)} · preço ilustrativo`;
+    $('[data-pdp-text]').textContent = p.texto || '';
+    $('[data-pdp-brands]').textContent = `${c.marcas} (${c.nome.toLowerCase()})`;
+    $('[data-pdp-size-note]').textContent = p.esgotados.length ? '· riscado = esgotado' : '';
+    $('[data-pdp-sizes]').innerHTML = D.numeracao.map(n => {
+      const out = p.esgotados.includes(n);
+      return `<button type="button" data-size="${n}" aria-pressed="${picked[p.id] === n}" ${out ? 'disabled' : ''}
+        aria-label="Número ${n}${out ? ', esgotado' : ''}">${n}</button>`;
+    }).join('');
+    const mais = [...produtos.filter(x => x.cat === p.cat && x.id !== p.id), ...produtos.filter(x => x.cat !== p.cat)].slice(0, 3);
+    $('[data-pdp-more]').innerHTML = mais.map(x =>
+      `<button type="button" data-more="${x.id}"><img src="${img(x.foto, 300, 375)}" width="300" height="375" alt="" loading="lazy">
+        <span>${x.nome}</span><b>${brl(x.por)}</b></button>`).join('');
+    $('.pdp-grid', pdp).scrollTop = 0; $('.pdp-info', pdp).scrollTop = 0;
+  }
+  function openPdp(p, push) {
+    renderPdp(p);
+    if (!pdp.open) { if (typeof pdp.showModal === 'function') pdp.showModal(); else pdp.setAttribute('open', ''); }
+    // O botão "voltar" do celular fecha a ficha em vez de sair do site.
+    if (push) history.pushState({ pdp: p.id }, '', `#p-${p.id}`);
+    else history.replaceState({ pdp: p.id }, '', `#p-${p.id}`);
+  }
+  function closePdp() { if (history.state && history.state.pdp) history.back(); else pdp.close(); }
+  pdp.addEventListener('close', () => {
+    if (location.hash.startsWith('#p-')) history.replaceState(null, '', location.pathname + location.search + '#modelos');
+  });
+  addEventListener('popstate', () => {
+    const p = location.hash.startsWith('#p-') && byId(location.hash.slice(3));
+    if (p) openPdp(p, false); else if (pdp.open) pdp.close();
+  });
+  $('[data-close-pdp]').addEventListener('click', closePdp);
+  pdp.addEventListener('click', e => {
+    if (e.target === pdp) { closePdp(); return; }
+    const s = e.target.closest('[data-size]');
+    if (s) {
+      const n = Number(s.dataset.size);
+      picked[atual.id] = picked[atual.id] === n ? undefined : n;
+      $$('[data-size]', pdp).forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.size) === picked[atual.id])));
+      syncSizes(atual);
+      return;
+    }
+    const m = e.target.closest('[data-more]');
+    if (m) { openPdp(byId(m.dataset.more), true); }
+  });
+  pdp.addEventListener('cancel', e => { e.preventDefault(); closePdp(); });
+  $('[data-pdp-add]').addEventListener('click', () => {
+    const size = picked[atual.id];
+    if (!size) {
+      const f = $('.pdp-sizes', pdp);
+      f.classList.remove('needs-size'); void f.offsetWidth; f.classList.add('needs-size');
+      toast('Escolha o número antes.');
+      return;
+    }
+    if (addToBag(atual, size)) closePdp();
+  });
+  $('[data-pdp-ask]').addEventListener('click', () => {
+    const n = picked[atual.id] ? `no número ${picked[atual.id]}` : 'no meu número';
+    sendWhatsApp(`Oi, Pink! Vi no site o modelo "${atual.nome}" (${atual.catNome}). Tem ${n}?\n${pageUrl()}#p-${atual.id}`);
   });
 
   $('[data-ask-general]').addEventListener('click', () => {
@@ -194,4 +279,7 @@
 
   renderShop();
   renderBag();
+  // Link direto para um modelo (ex.: o que a consultora manda no WhatsApp).
+  const inicial = location.hash.startsWith('#p-') && byId(location.hash.slice(3));
+  if (inicial) openPdp(inicial, false);
 })();

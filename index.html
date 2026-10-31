@@ -158,6 +158,41 @@
     </div>
   </footer>
 
+  <!-- Ficha do produto (abre ao tocar na foto ou no nome) -->
+  <dialog class="pdp" data-pdp aria-labelledby="pdp-title">
+    <button class="pdp-close" type="button" data-close-pdp aria-label="Fechar">Fechar</button>
+    <div class="pdp-grid">
+      <div class="pdp-photo">
+        <img data-pdp-img src="" width="900" height="1125" alt="">
+        <span class="off" data-pdp-off></span>
+        <p class="pdp-caption">Imagem ilustrativa</p>
+      </div>
+      <div class="pdp-info">
+        <p class="card-cat" data-pdp-cat></p>
+        <h2 id="pdp-title" data-pdp-name tabindex="-1" autofocus></h2>
+        <p class="pdp-price"><s data-pdp-de></s> <b data-pdp-por></b></p>
+        <p class="pdp-save" data-pdp-save></p>
+        <p data-pdp-text></p>
+        <fieldset class="pdp-sizes">
+          <legend>Escolha o número <span class="note" data-pdp-size-note></span></legend>
+          <div data-pdp-sizes></div>
+        </fieldset>
+        <button class="btn btn-wide" type="button" data-pdp-add>Adicionar à sacola</button>
+        <button class="linkbtn pdp-ask" type="button" data-pdp-ask>Tirar dúvida sobre este modelo no WhatsApp</button>
+        <dl class="pdp-facts">
+          <dt>Retirada</dt><dd>Na loja, Av. República Argentina, 1539 · Água Verde</dd>
+          <dt>Entrega</dt><dd>Motoboy em Curitiba: consulte a área e a taxa</dd>
+          <dt>Pagamento</dt><dd>Consulte a equipe</dd>
+          <dt>Marcas</dt><dd data-pdp-brands></dd>
+        </dl>
+        <div class="pdp-more">
+          <h3>Combina com</h3>
+          <div data-pdp-more></div>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
   <!-- Sacola -->
   <div class="bagbar" data-bagbar hidden>
     <p><b data-bag-count>0</b> <span data-bag-word>par</span> · <b data-bag-total></b></p>
