@@ -41,7 +41,14 @@
     "sameAs": ["https://www.instagram.com/pinkcuritiba/"]
   }
   </script>
-  <script>document.documentElement.classList.add('js')</script>
+  <script>
+    // Movimento (GSAP). Se não carregar em 2,5s, mostra tudo parado.
+    document.documentElement.classList.add('js');
+    setTimeout(() => { if (!document.documentElement.classList.contains('motion')) document.documentElement.classList.add('no-motion'); }, 2500);
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="motion.js" defer></script>
 </head>
 <body>
   <p class="demo-bar">Proposta de site — demonstração. Fotos e preços ilustrativos.</p>
@@ -64,9 +71,9 @@
         <div class="stripe" aria-hidden="true"></div>
         <div class="hero-card-body">
           <p class="hero-wordmark script" aria-hidden="true">Pink</p>
-          <h1 id="hero-title" class="reveal">Seu próximo par com até 70% OFF.</h1>
-          <p class="lead reveal">A Pink Calçados é um outlet de tênis, sandálias, rasteirinhas e botas no Água Verde, em Curitiba. Escolha os modelos aqui e confirme o número com a loja no WhatsApp.</p>
-          <div class="hero-actions reveal">
+          <h1 id="hero-title" class="intro">Seu próximo par com até 70% OFF.</h1>
+          <p class="lead intro">A Pink Calçados é um outlet de tênis, sandálias, rasteirinhas e botas no Água Verde, em Curitiba. Escolha os modelos aqui e confirme o número com a loja no WhatsApp.</p>
+          <div class="hero-actions intro">
             <a class="btn" href="#modelos">Ver a vitrine</a>
             <a class="link" href="#loja">Como chegar na loja</a>
           </div>
@@ -82,6 +89,7 @@
 
     <!-- Vitrine: categorias em círculos + grade de produtos, como uma loja virtual -->
     <section class="shop" id="modelos" aria-labelledby="shop-title">
+      <p class="backtype" aria-hidden="true">OUTLET · ATÉ 70% OFF</p>
       <div class="shop-head">
         <h2 id="shop-title">Vitrine da semana</h2>
         <p>Escolha o modelo e o número, coloque na sacola e finalize pelo WhatsApp. <span class="note">Fotos e preços desta demonstração são ilustrativos.</span></p>
@@ -117,9 +125,9 @@
     <section class="proof" aria-labelledby="proof-title">
       <h2 id="proof-title" class="reveal">Por que a Pink</h2>
       <div class="proof-cols">
-        <p class="reveal"><span class="soft">No Google</span><br>Nota 4,9<br>447 avaliações<br><a href="https://www.google.com/maps/search/?api=1&amp;query=Pink+Cal%C3%A7ados+Av.+Rep%C3%BAblica+Argentina+1539+Curitiba" target="_blank" rel="noopener">Ler as avaliações</a></p>
+        <p class="reveal"><span class="soft">No Google</span><br>Nota <span data-count="4.9" data-dec="1">4,9</span><br><span data-count="447">447</span> avaliações<br><a href="https://www.google.com/maps/search/?api=1&amp;query=Pink+Cal%C3%A7ados+Av.+Rep%C3%BAblica+Argentina+1539+Curitiba" target="_blank" rel="noopener">Ler as avaliações</a></p>
         <p class="reveal"><span class="soft">Marcas</span><br>Vizzano<br>Moleca<br>Beira Rio<br>Actvitta</p>
-        <p class="reveal"><span class="soft">No Instagram</span><br>18,1 mil seguidores<br><a href="https://www.instagram.com/pinkcuritiba/" target="_blank" rel="noopener">@pinkcuritiba</a></p>
+        <p class="reveal"><span class="soft">No Instagram</span><br><span data-count="18.1" data-dec="1">18,1</span> mil seguidores<br><a href="https://www.instagram.com/pinkcuritiba/" target="_blank" rel="noopener">@pinkcuritiba</a></p>
         <p class="reveal"><span class="soft">O que elogiam</span><br>Preço<br>Variedade<br>Marcas<br>Atendimento</p>
       </div>
     </section>

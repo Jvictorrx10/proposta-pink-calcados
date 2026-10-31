@@ -338,8 +338,22 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .toast.is-on { transform: translate(-50%, 0); }
 
 /* Entradas ao rolar (só com JS; sem JS tudo aparece) */
-.js .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
-.js .reveal.is-in { opacity: 1; transform: none; }
+html.js:not(.no-motion) .reveal, html.js:not(.no-motion) .intro { opacity: 0; }
+
+/* Movimento (GSAP): palavra gigante, letreiro e o par voando para a sacola */
+.shop { position: relative; overflow: hidden; }
+.shop > :not(.backtype) { position: relative; z-index: 1; }
+.backtype {
+  position: absolute; left: 0; top: clamp(40px, 6vw, 96px); margin: 0; z-index: 0; pointer-events: none;
+  font-family: var(--serif); font-size: clamp(6rem, 20vw, 20rem); line-height: .8; white-space: nowrap;
+  color: var(--pink-soft); letter-spacing: -0.04em;
+}
+.promo.is-marquee { display: block; overflow: hidden; white-space: nowrap; padding-inline: 0; position: relative; }
+.promo.is-marquee > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.promo-track { display: inline-flex; gap: 28px; align-items: center; }
+.promo-track i { font-style: normal; opacity: .7; }
+.store { overflow: hidden; }
+.fly { position: fixed; z-index: 70; object-fit: cover; pointer-events: none; }
 
 /* Celular */
 @media (max-width: 860px) {
@@ -390,5 +404,5 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
-  .js .reveal { opacity: 1; transform: none; }
+  html.js .reveal, html.js .intro { opacity: 1; }
 }

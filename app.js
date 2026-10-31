@@ -83,6 +83,7 @@
     const c = D.categorias.find(x => x.id === filtro);
     $('[data-brands]').textContent = c ? `Marcas de ${c.nome.toLowerCase()} na loja: ${c.marcas}.` : 'Marcas na loja: Vizzano, Moleca, Beira Rio e Actvitta.';
     gridEl.innerHTML = lista.map(card).join('') + (filtro === 'todos' ? tile : '');
+    document.dispatchEvent(new CustomEvent('pink:vitrine'));
   }
 
   catsEl.addEventListener('click', e => {
@@ -117,6 +118,7 @@
     if (bag.some(i => i.id === p.id && i.size === size)) { toast('Esse par já está na sacola.'); return false; }
     if (bag.length >= MAX) { toast(`A sacola leva até ${MAX} pares. Finalize estes e continue depois.`); return false; }
     bag.push({ id: p.id, size });
+    document.dispatchEvent(new CustomEvent('pink:sacola', { detail: { id: p.id, foto: img(p.foto, 160, 200) } }));
     save(); renderBag();
     bagbar.classList.remove('bump'); void bagbar.offsetWidth; bagbar.classList.add('bump');
     toast(`${p.nome}, número ${size}, na sacola.`);
@@ -263,19 +265,7 @@
     start();
   }
 
-  // ---------- Entradas ----------
-  const io = 'IntersectionObserver' in window && new IntersectionObserver(entries => {
-    entries.forEach(en => {
-      if (!en.isIntersecting) return;
-      en.target.classList.add('is-in');
-      io.unobserve(en.target);
-    });
-  }, { rootMargin: '0px 0px -8% 0px' });
-  $$('.reveal').forEach(el => {
-    const sib = [...el.parentElement.children].filter(c => c.classList.contains('reveal'));
-    el.style.transitionDelay = `${sib.indexOf(el) * 80}ms`;
-    if (io) io.observe(el); else el.classList.add('is-in');
-  });
+  // As entradas ao rolar ficam no motion.js (GSAP).
 
   renderShop();
   renderBag();
