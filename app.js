@@ -203,9 +203,9 @@
     sendWhatsApp(`Oi, Pink! Vi no site o modelo "${atual.nome}" (${atual.catNome}). Tem ${n}?\n${pageUrl()}#p-${atual.id}`);
   });
 
-  $('[data-ask-general]').addEventListener('click', () => {
+  $$('[data-ask-general]').forEach(b => b.addEventListener('click', () => {
     sendWhatsApp(`Oi, Pink! Vim pelo site e queria tirar uma dúvida.\n${pageUrl()}`);
-  });
+  }));
 
   // ---------- Sacola ----------
   const dlg = $('[data-bag]');
@@ -223,6 +223,7 @@
     $$('[data-bag-total]').forEach(el => { el.textContent = brl(total()); });
     $('[data-bag-word]').textContent = bag.length === 1 ? 'par' : 'pares';
     bagbar.hidden = bag.length === 0 || dlg.open;
+    const waf = $('.wa-float'); if (waf) waf.classList.toggle('up', !bagbar.hidden);
     $('[data-bag-empty]').hidden = bag.length > 0;
     $('[data-send]').disabled = bag.length === 0;
     $('[data-bag-list]').innerHTML = bag.map((i, k) => {
