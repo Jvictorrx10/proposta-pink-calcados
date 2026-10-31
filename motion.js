@@ -75,9 +75,8 @@ window.assinatura = ({ gsap, ScrollTrigger, mobile }) => {
 // Como usar: site/motion.js = `window.assinatura = ({ gsap, ScrollTrigger, mobile }) => { ... }` + este arquivo.
 // A assinatura roda dentro do gsap.matchMedia (só com movimento permitido) e cuida da abertura (.intro) do site.
 // No index.html, antes de app.js:
-//   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-//   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
-// e depois de app.js: <script src="motion.js" defer></script>  (app.js também com defer)
+//   gsap.min.js e ScrollTrigger.min.js do cdnjs (versão 3.12.5), com defer
+// e depois deles, motion.js também com defer (roda depois do app.js do fim do body).
 // No <head>, um script que marca html.no-motion se o GSAP não carregar em 2,5s, e no CSS:
 //   html.js:not(.no-motion) .reveal, html.js:not(.no-motion) .intro { opacity: 0; }
 //   @media (prefers-reduced-motion: reduce) { html.js .reveal, html.js .intro { opacity: 1; } }
